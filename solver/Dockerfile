@@ -16,6 +16,6 @@ RUN cargo build --release && \
 FROM scratch
 
 COPY --from=builder \
-    /home/rust/src/target/x86_64-unknown-linux-musl/release/solver .
+    /home/rust/target/x86_64-unknown-linux-musl/release/solver .
 
 ENTRYPOINT ["./solver"]
