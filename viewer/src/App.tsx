@@ -1,24 +1,27 @@
 import React from 'react';
 import logo from './logo.svg';
 import './App.css';
+import { Box, Grid } from 'grommet'
 
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <Grid
+        areas={[
+          { name: 'nav', start: [0, 0], end: [0, 0] },
+          { name: 'main', start: [1, 0], end: [1, 0] },
+          { name: 'side', start: [2, 0], end: [2, 0] },
+          { name: 'foot', start: [0, 1], end: [2, 1] },
+        ]}
+        columns={['small', 'flex', 'medium']}
+        rows={['medium', 'small']}
+        gap='small'
+      >
+        <Box gridArea='nav' background='brand' />
+        <Box gridArea='main' background='brand' />
+        <Box gridArea='side' background='brand' />
+        <Box gridArea='foot' background='accent-1' />
+      </Grid>
     </div>
   );
 }
