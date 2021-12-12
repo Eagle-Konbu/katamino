@@ -11,7 +11,7 @@ COPY ./src /home/rust
 RUN rm -f /home/rust/target/x86_64-unknown-linux-musl/release/deps/solver*
 
 RUN cargo build --release && \
-    strip /home/rust/src/target/x86_64-unknown-linux-musl/release/solver
+    strip /home/rust/target/x86_64-unknown-linux-musl/release/solver
 
 FROM scratch
 
