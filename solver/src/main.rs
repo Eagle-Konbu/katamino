@@ -1,3 +1,4 @@
+use actix_cors::Cors;
 use actix_web::{get, web, App, HttpResponse, HttpServer};
 use serde::{Deserialize, Serialize};
 
@@ -32,8 +33,14 @@ async fn index(size: web::Path<Size>) -> HttpResponse {
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
-    HttpServer::new(|| App::new().service(index))
-        .bind("0.0.0.0:8080")?
-        .run()
-        .await
+    HttpServer::new(|| {
+        let cors = Cors::default()
+            .allowed_origin_fn(|_, _| true)
+            .allowed_methods(vec!["GET"]);
+
+        App::new().wrap(cors).service(index)
+    })
+    .bind("0.0.0.0:8080")?
+    .run()
+    .await
 }
