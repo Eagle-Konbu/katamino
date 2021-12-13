@@ -12,4 +12,6 @@ COPY --from=builder \
 
 ENV RUST_BACKTRACE=full
 
+EXPOSE 8080
+
 ENTRYPOINT ["./solver"]
