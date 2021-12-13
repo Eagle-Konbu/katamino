@@ -6,7 +6,7 @@ import KataminoGrid from './components/KataminoGrid'
 import type { Solution, SolverResponse } from './types/Solution'
 
 function App() {
-  const solverURL = "http://solver:8080/"
+  const solverURL = "http://solver:8080"
   const [size, setSize] = React.useState('6x10');
   const [isLoading, setIsLoading] = React.useState(false);
 
