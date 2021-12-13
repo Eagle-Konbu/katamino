@@ -1,4 +1,4 @@
-import { Box, Button, Card, CardBody, Form, Grid, Header, Heading, RadioButtonGroup } from 'grommet'
+import { Box, Button, Card, CardBody, Header, Heading, RadioButtonGroup, Text } from 'grommet'
 import React from 'react';
 
 import KataminoGrid from './components/KataminoGrid'
@@ -28,11 +28,14 @@ function App() {
           />
           <Button primary label="Solve" style={{ marginTop: '20px' }} />
         </Box>
-        <Card background="light-1">
-          <CardBody pad="medium">
-            <KataminoGrid solution={solution} />
-          </CardBody>
-        </Card>
+        <Text><span>計算時間:5.000s</span><span style={{ marginLeft: '20px' }}>解の個数: 5個</span></Text>
+        <Box direction="column" pad="medium">
+          <Card background="light-1">
+            <CardBody pad="medium">
+              <KataminoGrid solution={solution} />
+            </CardBody>
+          </Card>
+        </Box>
       </Box>
     </div>
   );
