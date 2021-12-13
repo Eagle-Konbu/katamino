@@ -16,7 +16,7 @@ function App() {
     setIsLoading(true);
     const width = Number(size.substring(2));
     const height = Number(size.substring(0, 1));
-    axios.get(`/api/solver/${height}/${width}`).then((res: AxiosResponse<SolverResponse>) => {
+    axios.get(`/solve/${height}/${width}`).then((res: AxiosResponse<SolverResponse>) => {
       const { data, status } = res;
       console.log(data);
       

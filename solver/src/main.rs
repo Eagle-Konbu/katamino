@@ -17,7 +17,7 @@ struct Solution {
     solutions: Vec<Vec<String>>,
 }
 
-#[get("/{width}/{height}")]
+#[get("/solve/{width}/{height}")]
 async fn index(size: web::Path<Size>) -> HttpResponse {
     let sol = solve::solve();
     let res = Solution {
