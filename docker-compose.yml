@@ -1,11 +1,9 @@
 version: '3'
 services:
-  viewer:
-    image: 17cl/katamino-viewer
+  client:
+    image: 17cl/katamino-client
     build:
-      context: ./viewer
-    ports:
-      - 3000:80
+      context: ./client
   solver:
     image: 17cl/katamino-solver
     build:
