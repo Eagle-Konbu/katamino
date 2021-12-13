@@ -6,7 +6,6 @@ import KataminoGrid from './components/KataminoGrid'
 import type { Solution, SolverResponse } from './types/Solution'
 
 function App() {
-  const solverURL = "http://solver:8080"
   const [size, setSize] = React.useState('6x10');
   const [isLoading, setIsLoading] = React.useState(false);
 
@@ -17,7 +16,7 @@ function App() {
     setIsLoading(true);
     const width = Number(size.substring(2));
     const height = Number(size.substring(0, 1));
-    axios.get(`${solverURL}/${height}/${width}`).then((res: AxiosResponse<SolverResponse>) => {
+    axios.get(`/api/solver/${height}/${width}`).then((res: AxiosResponse<SolverResponse>) => {
       const { data, status } = res;
       setSolutions(data.solutions.map(s => {
         return {
