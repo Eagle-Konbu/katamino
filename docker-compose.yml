@@ -4,9 +4,19 @@ services:
     image: 17cl/katamino-client
     build:
       context: ./client
+    depends_on:
+      - solver
   solver:
     image: 17cl/katamino-solver
     build:
       context: ./solver
     ports:
       - 8080:8080
+  nginx:
+    image: nginx:stable-alpine
+    ports:
+      - 80:80
+    volumes:
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - client
