@@ -11,6 +11,7 @@ struct Size {
 struct Solution {
     width: usize,
     height: usize,
+    calc_time: f64,
     solutions: Vec<String>,
 }
 
@@ -19,6 +20,7 @@ async fn index(size: web::Path<Size>) -> HttpResponse {
     let res = Solution {
         width: size.width,
         height: size.height,
+        calc_time: 5.0,
         solutions: vec![String::from("#AA0000"); size.width * size.height],
     };
 
