@@ -1,27 +1,39 @@
+import { Box, Button, Card, CardBody, Form, Grid, Header, Heading, RadioButtonGroup } from 'grommet'
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
-import { Box, Grid } from 'grommet'
+
+import KataminoGrid from './components/KataminoGrid'
+import type { Solution } from './types/Solution'
 
 function App() {
+  const [size, setSize] = React.useState('6x10');
+
+  const solution: Solution = {
+    width: 10,
+    height: 6,
+    hexCodes: Array(60).fill("#CC7700")
+  };
+
   return (
-    <div className="App">
-      <Grid
-        areas={[
-          { name: 'nav', start: [0, 0], end: [0, 0] },
-          { name: 'main', start: [1, 0], end: [1, 0] },
-          { name: 'side', start: [2, 0], end: [2, 0] },
-          { name: 'foot', start: [0, 1], end: [2, 1] },
-        ]}
-        columns={['small', 'flex', 'medium']}
-        rows={['medium', 'small']}
-        gap='small'
-      >
-        <Box gridArea='nav' background='brand' />
-        <Box gridArea='main' background='brand' />
-        <Box gridArea='side' background='brand' />
-        <Box gridArea='foot' background='accent-1' />
-      </Grid>
+    <div>
+      <Header background="brand">
+        <Heading size="xsmall" margin="medium">Katamino Solver</Heading>
+      </Header>
+      <Box direction="column" pad="medium" align="center" background="light-2">
+        <Box pad="medium" align="center">
+          <RadioButtonGroup
+            name="size_radio"
+            options={['6x10', '5x12', '4x15', '3x20']}
+            value={size}
+            onChange={(e) => { setSize(e.target.value) }}
+          />
+          <Button primary label="Solve" style={{ marginTop: '20px' }} />
+        </Box>
+        <Card background="light-1">
+          <CardBody pad="medium">
+            <KataminoGrid solution={solution} />
+          </CardBody>
+        </Card>
+      </Box>
     </div>
   );
 }
