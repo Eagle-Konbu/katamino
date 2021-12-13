@@ -1,5 +1,11 @@
 pub fn solve() -> (Vec<Vec<String>>, f64) {
-    let sol = vec![vec![String::from("#AA0000"); 60]; 4];
+    let mut sol_tmp = vec![String::from("#AA0000"); 30];
+
+    for _ in 0..30 {
+        sol_tmp.push(String::from("#00AA00"));
+    }
+
+    let sol = vec![sol_tmp.clone(); 4];
 
     let timer = Timer::new();
 
