@@ -1,5 +1,7 @@
-use actix_web::{get, web, App, HttpServer, HttpResponse};
-use serde::{Serialize, Deserialize};
+use actix_web::{get, web, App, HttpResponse, HttpServer};
+use serde::{Deserialize, Serialize};
+
+mod solve;
 
 #[derive(Deserialize)]
 struct Size {
@@ -7,7 +9,7 @@ struct Size {
     height: usize,
 }
 
-#[derive(Serialize)]
+#[derive(Serialize, Clone)]
 struct Solution {
     width: usize,
     height: usize,
@@ -17,12 +19,16 @@ struct Solution {
 
 #[get("/{width}/{height}")]
 async fn index(size: web::Path<Size>) -> HttpResponse {
-    let res = Solution {
-        width: size.width,
-        height: size.height,
-        calc_time: 5.0,
-        solutions: vec![String::from("#AA0000"); size.width * size.height],
-    };
+    let sol = solve::solve();
+    let res = vec![
+        Solution {
+            width: size.width,
+            height: size.height,
+            calc_time: sol.1,
+            solutions: sol.0,
+        };
+        6
+    ];
 
     HttpResponse::Ok().json(res)
 }
