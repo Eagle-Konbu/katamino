@@ -1,10 +1,12 @@
+import axios, { AxiosError, AxiosResponse } from 'axios';
 import { Box, Button, Card, CardBody, Header, Heading, RadioButtonGroup, Spinner, Text } from 'grommet'
 import React from 'react';
 
 import KataminoGrid from './components/KataminoGrid'
-import type { Solution } from './types/Solution'
+import type { Solution, SolverResponse } from './types/Solution'
 
 function App() {
+  const solverURL = "http://solver/"
   const [size, setSize] = React.useState('6x10');
   const [isLoading, setIsLoading] = React.useState(false);
 
@@ -14,10 +16,27 @@ function App() {
     hexCodes: Array(60).fill("#CC7700")
   };
   const [solutions, setSolutions] = React.useState<Solution[]>([]);
+  const [calcTime, setCalcTime] = React.useState(0);
 
   const handleClick = () => {
     setIsLoading(true);
-    setSolutions(Array(4).fill(solution));
+    const width = Number(size.substring(2));
+    const height = Number(size.substring(0, 1));
+    axios.get(`${solverURL}/${height}/${width}`).then((res: AxiosResponse<SolverResponse>) => {
+      const { data, status } = res;
+      setSolutions(data.solutions.map(s => {
+        return {
+          width: data.width,
+          height: data.height,
+          hexCodes: s
+        }
+      }));
+      setCalcTime(data.calc_time);
+    }).catch((err: AxiosError<{ error: string }>) => {
+      console.error(err);
+    }).finally(() => {
+      setIsLoading(false);
+    })
   }
 
   return (
@@ -36,7 +55,7 @@ function App() {
           <Button primary label="Solve" onClick={handleClick} style={{ marginTop: '20px' }} />
         </Box>
         <div style={{ display: isLoading ? 'block' : 'none' }}><Spinner /></div>
-        <Text style={{ display: solutions.length != 0 ? 'block' : 'none'}}><span>計算時間:{5}s</span><span style={{ marginLeft: '20px' }}>解の個数: {solutions.length}個</span></Text>
+        <Text style={{ display: solutions.length != 0 ? 'block' : 'none' }}><span>計算時間:{5}s</span><span style={{ marginLeft: '20px' }}>解の個数: {solutions.length}個</span></Text>
         <Box direction="column" pad="medium">
           {
             solutions.map(s => {
