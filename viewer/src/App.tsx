@@ -6,15 +6,10 @@ import KataminoGrid from './components/KataminoGrid'
 import type { Solution, SolverResponse } from './types/Solution'
 
 function App() {
-  const solverURL = "http://solver/"
+  const solverURL = "http://solver:8080/"
   const [size, setSize] = React.useState('6x10');
   const [isLoading, setIsLoading] = React.useState(false);
 
-  const solution: Solution = {
-    width: 10,
-    height: 6,
-    hexCodes: Array(60).fill("#CC7700")
-  };
   const [solutions, setSolutions] = React.useState<Solution[]>([]);
   const [calcTime, setCalcTime] = React.useState(0);
 
@@ -55,7 +50,7 @@ function App() {
           <Button primary label="Solve" onClick={handleClick} style={{ marginTop: '20px' }} />
         </Box>
         <div style={{ display: isLoading ? 'block' : 'none' }}><Spinner /></div>
-        <Text style={{ display: solutions.length != 0 ? 'block' : 'none' }}><span>計算時間:{5}s</span><span style={{ marginLeft: '20px' }}>解の個数: {solutions.length}個</span></Text>
+        <Text style={{ display: solutions.length != 0 ? 'block' : 'none' }}><span>計算時間:{calcTime}s</span><span style={{ marginLeft: '20px' }}>解の個数: {solutions.length}個</span></Text>
         <Box direction="column" pad="medium">
           {
             solutions.map(s => {
