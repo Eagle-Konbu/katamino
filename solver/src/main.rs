@@ -1,8 +1,28 @@
-use actix_web::{get, web, App, HttpServer, Responder};
+use actix_web::{get, web, App, HttpServer, HttpResponse};
+use serde::{Serialize, Deserialize};
 
-#[get("/")]
-async fn index() -> impl Responder {
-    format!("Hello world!")
+#[derive(Deserialize)]
+struct Size {
+    width: usize,
+    height: usize,
+}
+
+#[derive(Serialize)]
+struct Solution {
+    width: usize,
+    height: usize,
+    solutions: Vec<String>,
+}
+
+#[get("/{width}/{height}")]
+async fn index(size: web::Path<Size>) -> HttpResponse {
+    let res = Solution {
+        width: size.width,
+        height: size.height,
+        solutions: vec![String::from("#AA0000"); size.width * size.height],
+    };
+
+    HttpResponse::Ok().json(res)
 }
 
 #[actix_web::main]
