@@ -7,7 +7,7 @@ function KataminoGrid(props: { solution: Solution }) {
     for (let i = 0; i < props.solution.height; i++) {
       for (let j = 0; j < props.solution.width; j++) {
         elements.push((
-          <Box background={props.solution.hexCodes[i * j + j]} />
+          <Box background={props.solution.hexCodes[i * props.solution.width + j]} />
         ))
       }
     }
