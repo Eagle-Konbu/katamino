@@ -14,21 +14,18 @@ struct Solution {
     width: usize,
     height: usize,
     calc_time: f64,
-    solutions: Vec<String>,
+    solutions: Vec<Vec<String>>,
 }
 
 #[get("/{width}/{height}")]
 async fn index(size: web::Path<Size>) -> HttpResponse {
     let sol = solve::solve();
-    let res = vec![
-        Solution {
-            width: size.width,
-            height: size.height,
-            calc_time: sol.1,
-            solutions: sol.0,
-        };
-        6
-    ];
+    let res = Solution {
+        width: size.width,
+        height: size.height,
+        calc_time: sol.1,
+        solutions: sol.0,
+    };
 
     HttpResponse::Ok().json(res)
 }

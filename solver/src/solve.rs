@@ -1,5 +1,5 @@
-pub fn solve() -> (Vec<String>, f64) {
-    let sol = vec![String::from("#AA0000"); 60];
+pub fn solve() -> (Vec<Vec<String>>, f64) {
+    let sol = vec![vec![String::from("#AA0000"); 60]; 4];
 
     let timer = Timer::new();
 
