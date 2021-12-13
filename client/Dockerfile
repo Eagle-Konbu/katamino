@@ -1,4 +1,4 @@
-FROM node:16-alpine as builder
+FROM node:14-alpine as builder
 
 WORKDIR /build
 COPY . .
@@ -7,7 +7,7 @@ RUN yarn install --frozen-lockfile && \
     NODE_ENV=production NODE_OPTIONS="--max_old_space_size=8192" yarn build
 
 
-FROM node:16-alpine
+FROM node:14-alpine
 
 RUN apk upgrade --update-cache --available && \
     apk add tzdata
