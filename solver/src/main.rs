@@ -1,5 +1,5 @@
 use actix_cors::Cors;
-use actix_web::{get, web, App, HttpResponse, HttpServer};
+use actix_web::{get, web, App, HttpResponse, HttpServer, http};
 use serde::{Deserialize, Serialize};
 
 mod solve;
@@ -36,7 +36,10 @@ async fn main() -> std::io::Result<()> {
     HttpServer::new(|| {
         let cors = Cors::default()
             .allowed_origin_fn(|_, _| true)
-            .allowed_methods(vec!["GET"]);
+            .allowed_methods(vec!["GET"])
+            .allowed_headers(vec![http::header::AUTHORIZATION, http::header::ACCEPT])
+            .allowed_header(http::header::CONTENT_TYPE)
+            .max_age(3600);
 
         App::new().wrap(cors).service(index)
     })
