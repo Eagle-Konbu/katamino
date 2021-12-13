@@ -13,7 +13,7 @@ export default function handler(
 ) {
   const width = req.query.width as string || "20";
   const height = req.query.height as string || "3"
-  axios.get(`/api/solve/${height}/${width}`).then((r: AxiosResponse<SolverResponse>) => {
+  axios.get(`http://solver:8080/solve/${height}/${width}`).then((r: AxiosResponse<SolverResponse>) => {
     const { data, status } = r;
     console.log(data);
 
