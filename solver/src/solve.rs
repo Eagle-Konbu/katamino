@@ -1,4 +1,6 @@
 pub fn solve() -> (Vec<Vec<String>>, f64) {
+    let timer = Timer::new();
+
     let mut sol_tmp = vec![String::from("#AA0000"); 30];
 
     for _ in 0..30 {
@@ -7,9 +9,12 @@ pub fn solve() -> (Vec<Vec<String>>, f64) {
 
     let sol = vec![sol_tmp.clone(); 4];
 
-    let timer = Timer::new();
-
     return (sol, 2.0);
+}
+
+struct Piece {
+    color: String,
+    position: Vec<(i32, i32)>,
 }
 
 fn get_time() -> f64 {
