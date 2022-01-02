@@ -73,6 +73,10 @@ func Solve(width int, height int) ([][]string, float64) {
 	return solutions, calcTime
 }
 
-func Rotate90(base Point) {
-
+func Rotate90(base Piece) Piece {
+	newPiece := Piece{color: base.color, positions: make([]Point, 5)}
+	for i, p := range base.positions {
+		newPiece.positions[i] = Point{x: base.positions[i].y - p.y, y: p.x - base.positions[i].x}
+	}
+	return newPiece
 }
