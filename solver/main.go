@@ -1,12 +1,11 @@
 package main
 
 import (
-	"bytes"
-	"encoding/json"
 	"fmt"
-	"log"
 	"net/http"
 	"solver/solvepkg"
+
+	"github.com/labstack/echo"
 )
 
 type Response struct {
@@ -16,7 +15,7 @@ type Response struct {
 	Solutions [][]string `json:"solutions"`
 }
 
-func solveHandler(w http.ResponseWriter, r *http.Request) {
+func solveHandler(c echo.Context) error {
 	solutions, calcTime := solvepkg.Solve()
 	var res Response
 	res.Width = 5
@@ -24,23 +23,13 @@ func solveHandler(w http.ResponseWriter, r *http.Request) {
 	res.CalcTime = calcTime
 	res.Solutions = solutions
 
-	var buf bytes.Buffer
-	enc := json.NewEncoder(&buf)
-	if err := enc.Encode(&res); err != nil {
-		log.Fatal(err)
-	}
-	fmt.Println(buf.String())
-
-	w.Header().Set("Content-Type", "application/json")
-
-	_, err := fmt.Fprint(w, buf.String())
-	if err != nil {
-		return
-	}
+	fmt.Println(res)
+	return c.JSON(http.StatusOK, res)
 }
 
 func main() {
-	http.HandleFunc("/", solveHandler)
+	echo := echo.New()
 
-	log.Fatal(http.ListenAndServe("0.0.0.0:8080", nil))
+	echo.GET("/", solveHandler)
+	echo.Logger.Fatal(echo.Start("0.0.0.0:8080"))
 }
