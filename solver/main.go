@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 	"solver/solvepkg"
+	"strconv"
 
 	"github.com/labstack/echo"
 )
@@ -16,10 +17,13 @@ type Response struct {
 }
 
 func solveHandler(c echo.Context) error {
-	solutions, calcTime := solvepkg.Solve()
+	width, _ := strconv.Atoi(c.Param("width"))
+	height, _ := strconv.Atoi(c.Param("height"))
+
+	solutions, calcTime := solvepkg.Solve(width, height)
 	var res Response
-	res.Width = 5
-	res.Height = 5
+	res.Width = width
+	res.Height = height
 	res.CalcTime = calcTime
 	res.Solutions = solutions
 
@@ -30,6 +34,6 @@ func solveHandler(c echo.Context) error {
 func main() {
 	echo := echo.New()
 
-	echo.GET("/", solveHandler)
+	echo.GET("/solve/:height/:width", solveHandler)
 	echo.Logger.Fatal(echo.Start("0.0.0.0:8080"))
 }

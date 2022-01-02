@@ -1,6 +1,6 @@
 package solvepkg
 
-func Solve() ([][]string, float64) {
+func Solve(width int, height int) ([][]string, float64) {
 	var solTmp []string
 	// var solutions [][]string
 	solutions := make([][]string, 4)
