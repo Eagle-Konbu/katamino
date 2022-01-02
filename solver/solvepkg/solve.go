@@ -13,7 +13,7 @@ type Piece struct {
 	positions []Point
 }
 
-func Fill(piece Piece, pointIdx int, board [][]bool) bool {
+func Fill(piece Piece, pointIdx int, board [][]string) bool {
 	width, height := len(board[0]), len(board)
 	targets := make([]Point, 5)
 	for i, p := range piece.positions {
@@ -25,7 +25,7 @@ func Fill(piece Piece, pointIdx int, board [][]bool) bool {
 	}
 
 	for _, p := range targets {
-		board[p.x][p.y] = true
+		board[p.x][p.y] = piece.color
 	}
 	return true
 }
@@ -34,23 +34,23 @@ func Solve(width int, height int) ([][]string, float64) {
 	var solTmp []string
 	solutions := make([][]string, 4)
 
-	puzzle := make([][]bool, height)
+	puzzle := make([][]string, height)
 	for i := range puzzle {
-		puzzle[i] = make([]bool, width)
+		puzzle[i] = make([]string, width)
 	}
 	pieces := []Piece{
-		Piece{color: "fdf100", positions: []Point{Point{x: 0, y: 0}, Point{x: 0, y: 1}, Point{x: 1, y: 0}, Point{x: 2, y: 1}, Point{x: 2, y: 2}}},
-		Piece{color: "29005d", positions: []Point{Point{x: 0, y: 0}, Point{x: 0, y: -1}, Point{x: 0, y: -2}, Point{x: 1, y: -2}, Point{x: 1, y: -3}}},
-		Piece{color: "66e25a", positions: []Point{Point{x: 0, y: 0}, Point{x: 0, y: 1}, Point{x: 1, y: 0}, Point{x: 1, y: -1}, Point{x: 2, y: -1}}},
-		Piece{color: "BB0000", positions: []Point{Point{x: 0, y: 0}, Point{x: 1, y: 0}, Point{x: 2, y: 0}, Point{x: 1, y: 1}, Point{x: 1, y: -1}}},
-		Piece{color: "996e5b", positions: []Point{Point{x: 0, y: 0}, Point{x: 1, y: 0}, Point{x: 2, y: 0}, Point{x: 1, y: 1}, Point{x: 1, y: -1}}},
-		Piece{color: "234c83", positions: []Point{Point{x: 0, y: 0}, Point{x: 1, y: 0}, Point{x: 1, y: -1}, Point{x: 1, y: -2}, Point{x: 2, y: -2}}},
-		Piece{color: "808080", positions: []Point{Point{x: 0, y: 0}, Point{x: 1, y: 0}, Point{x: 1, y: -1}, Point{x: 1, y: -2}, Point{x: 2, y: -1}}},
-		Piece{color: "000080", positions: []Point{Point{x: 0, y: 0}, Point{x: 0, y: -1}, Point{x: 0, y: -2}, Point{x: 0, y: -3}, Point{x: 0, y: -4}}},
-		Piece{color: "dad400", positions: []Point{Point{x: 0, y: 0}, Point{x: 0, y: -1}, Point{x: 0, y: -2}, Point{x: 0, y: -3}, Point{x: 1, y: -3}}},
-		Piece{color: "62b7ff", positions: []Point{Point{x: 0, y: 0}, Point{x: 0, y: -1}, Point{x: 0, y: -2}, Point{x: 1, y: -2}, Point{x: 2, y: -2}}},
-		Piece{color: "ffc0cb", positions: []Point{Point{x: 0, y: 0}, Point{x: 0, y: -1}, Point{x: 0, y: -2}, Point{x: 1, y: 0}, Point{x: 1, y: -1}}},
-		Piece{color: "004900", positions: []Point{Point{x: 0, y: 0}, Point{x: 1, y: 0}, Point{x: 2, y: 0}, Point{x: 1, y: -1}, Point{x: 1, y: -2}}},
+		Piece{color: "#fdf100", positions: []Point{Point{x: 0, y: 0}, Point{x: 0, y: 1}, Point{x: 1, y: 0}, Point{x: 2, y: 1}, Point{x: 2, y: 2}}},
+		Piece{color: "#29005d", positions: []Point{Point{x: 0, y: 0}, Point{x: 0, y: -1}, Point{x: 0, y: -2}, Point{x: 1, y: -2}, Point{x: 1, y: -3}}},
+		Piece{color: "#66e25a", positions: []Point{Point{x: 0, y: 0}, Point{x: 0, y: 1}, Point{x: 1, y: 0}, Point{x: 1, y: -1}, Point{x: 2, y: -1}}},
+		Piece{color: "#BB0000", positions: []Point{Point{x: 0, y: 0}, Point{x: 1, y: 0}, Point{x: 2, y: 0}, Point{x: 1, y: 1}, Point{x: 1, y: -1}}},
+		Piece{color: "#996e5b", positions: []Point{Point{x: 0, y: 0}, Point{x: 1, y: 0}, Point{x: 2, y: 0}, Point{x: 1, y: 1}, Point{x: 1, y: -1}}},
+		Piece{color: "#234c83", positions: []Point{Point{x: 0, y: 0}, Point{x: 1, y: 0}, Point{x: 1, y: -1}, Point{x: 1, y: -2}, Point{x: 2, y: -2}}},
+		Piece{color: "#808080", positions: []Point{Point{x: 0, y: 0}, Point{x: 1, y: 0}, Point{x: 1, y: -1}, Point{x: 1, y: -2}, Point{x: 2, y: -1}}},
+		Piece{color: "#000080", positions: []Point{Point{x: 0, y: 0}, Point{x: 0, y: -1}, Point{x: 0, y: -2}, Point{x: 0, y: -3}, Point{x: 0, y: -4}}},
+		Piece{color: "#dad400", positions: []Point{Point{x: 0, y: 0}, Point{x: 0, y: -1}, Point{x: 0, y: -2}, Point{x: 0, y: -3}, Point{x: 1, y: -3}}},
+		Piece{color: "#62b7ff", positions: []Point{Point{x: 0, y: 0}, Point{x: 0, y: -1}, Point{x: 0, y: -2}, Point{x: 1, y: -2}, Point{x: 2, y: -2}}},
+		Piece{color: "#ffc0cb", positions: []Point{Point{x: 0, y: 0}, Point{x: 0, y: -1}, Point{x: 0, y: -2}, Point{x: 1, y: 0}, Point{x: 1, y: -1}}},
+		Piece{color: "#004900", positions: []Point{Point{x: 0, y: 0}, Point{x: 1, y: 0}, Point{x: 2, y: 0}, Point{x: 1, y: -1}, Point{x: 1, y: -2}}},
 	}
 
 	startTime := time.Now()
