@@ -21,11 +21,7 @@ func solveHandler(c echo.Context) error {
 	height, _ := strconv.Atoi(c.Param("height"))
 
 	solutions, calcTime := solvepkg.Solve(width, height)
-	var res Response
-	res.Width = width
-	res.Height = height
-	res.CalcTime = calcTime
-	res.Solutions = solutions
+	res := Response{Width: width, Height: height, CalcTime: calcTime, Solutions: solutions}
 
 	fmt.Println(res)
 	return c.JSON(http.StatusOK, res)

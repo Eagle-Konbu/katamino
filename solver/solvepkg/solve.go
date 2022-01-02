@@ -1,9 +1,24 @@
 package solvepkg
 
+import (
+	"time"
+)
+
+type Point struct {
+	x int
+	y int
+}
+type Piece struct {
+	color    string
+	position Point
+}
+
 func Solve(width int, height int) ([][]string, float64) {
 	var solTmp []string
 	// var solutions [][]string
 	solutions := make([][]string, 4)
+
+	startTime := time.Now()
 
 	for i := 0; i < 30; i++ {
 		solTmp = append(solTmp, "#AA0000")
@@ -18,5 +33,7 @@ func Solve(width int, height int) ([][]string, float64) {
 		solutions[i] = tmp
 	}
 
-	return solutions, 2.0
+	calcTime := float64(time.Since(startTime).Milliseconds()) / 1000
+
+	return solutions, calcTime
 }
