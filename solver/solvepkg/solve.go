@@ -141,6 +141,20 @@ func Solve(width int, height int) ([][]string, float64) {
 
 	pieces = append(pieces, rotatedPieces...)
 
+	var flippedPieces []Piece
+	for _, piece := range pieces {
+		target := piece.positions[0]
+		for _, position := range piece.positions {
+			if position.x > target.x {
+				target = position
+			} else if position.x == target.x && position.y < target.y {
+				target = position
+			}
+		}
+		flippedPieces = append(flippedPieces, Flip(piece, target))
+	}
+	pieces = append(pieces, flippedPieces...)
+
 	startTime := time.Now()
 
 	solutions = Search(pieces, puzzle, solutions)
