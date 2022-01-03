@@ -1,6 +1,7 @@
 package solvepkg
 
 import (
+	"fmt"
 	"time"
 )
 
@@ -17,8 +18,8 @@ func Fill(piece Piece, pointIdx int, board [][]string) bool {
 	width, height := len(board[0]), len(board)
 	targets := make([]Point, 5)
 	for i, p := range piece.positions {
-		newTarget := Point{x: pointIdx%width + p.x, y: pointIdx/width + width*p.y}
-		if newTarget.x >= width && newTarget.y >= height {
+		newTarget := Point{x: pointIdx%width + p.x, y: pointIdx/width + p.y}
+		if newTarget.x >= width || newTarget.y >= height {
 			return false
 		}
 		targets[i] = newTarget
@@ -33,7 +34,10 @@ func Fill(piece Piece, pointIdx int, board [][]string) bool {
 func Search(pieces []Piece, board [][]string, solutions [][]string) {
 	width, height := len(board[0]), len(board)
 	var remainingPieces []Piece
-	var clonedBoard [][]string
+	clonedBoard := make([][]string, height)
+	for i := range clonedBoard {
+		clonedBoard[i] = make([]string, width)
+	}
 	remainingPieces = append(remainingPieces, pieces...)
 	copy(clonedBoard, board)
 
@@ -51,8 +55,8 @@ func Search(pieces []Piece, board [][]string, solutions [][]string) {
 		allAnglePieces := []Piece{pTmp}
 		for _, piece := range allAnglePieces {
 			if Fill(piece, idx, clonedBoard) {
-				remainingPieces = append(remainingPieces[:i], remainingPieces[i+1:]...)
-				if len(remainingPieces) == 0 {
+				if len(remainingPieces) == 1 {
+					fmt.Println(clonedBoard)
 					solution := make([]string, 60)
 					for i := 0; i < height; i++ {
 						for j := 0; j < width; j++ {
@@ -61,7 +65,7 @@ func Search(pieces []Piece, board [][]string, solutions [][]string) {
 					}
 					solutions = append(solutions, solution)
 				} else {
-					Search(remainingPieces, clonedBoard, solutions)
+					Search(append(remainingPieces[:i], remainingPieces[i+1:]...), clonedBoard, solutions)
 				}
 			}
 		}
@@ -75,6 +79,11 @@ func Solve(width int, height int) ([][]string, float64) {
 	puzzle := make([][]string, height)
 	for i := range puzzle {
 		puzzle[i] = make([]string, width)
+	}
+	for i := 0; i < height; i++ {
+		for j := 0; j < width; j++ {
+			puzzle[i][j] = ""
+		}
 	}
 	pieces := []Piece{
 		Piece{color: "#fdf100", positions: []Point{Point{x: 0, y: 0}, Point{x: 0, y: 1}, Point{x: 1, y: 0}, Point{x: 2, y: 1}, Point{x: 2, y: 2}}},
@@ -117,6 +126,22 @@ func Rotate90(piece Piece, base Point) Piece {
 	newPiece := Piece{color: piece.color, positions: make([]Point, 5)}
 	for i, p := range piece.positions {
 		newPiece.positions[i] = Point{x: base.y - p.y, y: p.x - base.x}
+	}
+	return newPiece
+}
+
+func Rotate180(piece Piece, base Point) Piece {
+	newPiece := Piece{color: piece.color, positions: make([]Point, 5)}
+	for i, p := range piece.positions {
+		newPiece.positions[i] = Point{x: base.x - p.x, y: base.y - p.y}
+	}
+	return newPiece
+}
+
+func Rotate270(piece Piece, base Point) Piece {
+	newPiece := Piece{color: piece.color, positions: make([]Point, 5)}
+	for i, p := range piece.positions {
+		newPiece.positions[i] = Point{x: p.y - base.y, y: base.x - p.x}
 	}
 	return newPiece
 }
