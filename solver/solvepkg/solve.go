@@ -14,7 +14,7 @@ type Piece struct {
 	positions []Point
 }
 
-func Fill(piece Piece, pointIdx int, board [][]string) bool {
+func Fill(piece Piece, pointIdx int, board [][]string, reset bool) bool {
 	width, height := len(board[0]), len(board)
 	targets := make([]Point, 5)
 	for i, p := range piece.positions {
@@ -29,7 +29,11 @@ func Fill(piece Piece, pointIdx int, board [][]string) bool {
 	}
 
 	for _, p := range targets {
-		board[p.y][p.x] = piece.color
+		if reset {
+			board[p.y][p.x] = ""
+		} else {
+			board[p.y][p.x] = piece.color
+		}
 	}
 	return true
 }
@@ -55,7 +59,8 @@ func Search(pieces []Piece, board [][]string, solutions [][]string) [][]string {
 	}
 
 	for i, piece := range remainingPieces {
-		if Fill(piece, idx, clonedBoard) {
+		fmt.Println(clonedBoard)
+		if Fill(piece, idx, clonedBoard, false) {
 			if len(remainingPieces) == 1 {
 				solution := make([]string, 60)
 				for i := 0; i < height; i++ {
@@ -67,6 +72,7 @@ func Search(pieces []Piece, board [][]string, solutions [][]string) [][]string {
 			} else {
 				Search(append(remainingPieces[:i], remainingPieces[i+1:]...), clonedBoard, solutions)
 			}
+			Fill(piece, idx, clonedBoard, true)
 		}
 	}
 	solution := make([]string, 60)
