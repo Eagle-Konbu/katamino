@@ -17,7 +17,7 @@ func Fill(piece Piece, pointIdx int, board [][]string) bool {
 	width, height := len(board[0]), len(board)
 	targets := make([]Point, 5)
 	for i, p := range piece.positions {
-		newTarget := Point{x: pointIdx + p.x, y: pointIdx + width*p.y}
+		newTarget := Point{x: pointIdx%width + p.x, y: pointIdx/width + width*p.y}
 		if newTarget.x >= width && newTarget.y >= height {
 			return false
 		}
@@ -30,9 +30,47 @@ func Fill(piece Piece, pointIdx int, board [][]string) bool {
 	return true
 }
 
+func Search(pieces []Piece, board [][]string, solutions [][]string) {
+	width, height := len(board[0]), len(board)
+	var remainingPieces []Piece
+	var clonedBoard [][]string
+	copy(remainingPieces, pieces)
+	copy(clonedBoard, board)
+
+	idx := 0
+	for i := 0; i < height; i++ {
+		for j := 0; j < width; j++ {
+			if board[i][j] == "" {
+				idx = i*width + j
+				break
+			}
+		}
+	}
+
+	for i, pTmp := range remainingPieces {
+		allAnglePieces := []Piece{pTmp}
+		for _, piece := range allAnglePieces {
+			if Fill(piece, idx, clonedBoard) {
+				remainingPieces = append(remainingPieces[:i], remainingPieces[i+1:]...)
+				if len(remainingPieces) == 0 {
+					solution := make([]string, 60)
+					for i := 0; i < height; i++ {
+						for j := 0; j < width; j++ {
+							solution[i*width+j] = clonedBoard[i][j]
+						}
+					}
+					solutions = append(solutions, solution)
+				} else {
+					Search(remainingPieces, clonedBoard, solutions)
+				}
+			}
+		}
+	}
+}
+
 func Solve(width int, height int) ([][]string, float64) {
-	var solTmp []string
-	solutions := make([][]string, 4)
+	// var solTmp []string
+	var solutions [][]string
 
 	puzzle := make([][]string, height)
 	for i := range puzzle {
@@ -55,18 +93,20 @@ func Solve(width int, height int) ([][]string, float64) {
 
 	startTime := time.Now()
 
-	for i := 0; i < 30; i++ {
-		solTmp = append(solTmp, "#AA0000")
-	}
-	for i := 0; i < 30; i++ {
-		solTmp = append(solTmp, "#00AA00")
-	}
+	Search(pieces, puzzle, solutions)
 
-	for i := 0; i < 4; i++ {
-		tmp := make([]string, len(solTmp))
-		copy(tmp, solTmp)
-		solutions[i] = tmp
-	}
+	// for i := 0; i < 30; i++ {
+	// 	solTmp = append(solTmp, "#AA0000")
+	// }
+	// for i := 0; i < 30; i++ {
+	// 	solTmp = append(solTmp, "#00AA00")
+	// }
+
+	// for i := 0; i < 4; i++ {
+	// 	tmp := make([]string, len(solTmp))
+	// 	copy(tmp, solTmp)
+	// 	solutions[i] = tmp
+	// }
 
 	calcTime := float64(time.Since(startTime).Milliseconds()) / 1000
 
