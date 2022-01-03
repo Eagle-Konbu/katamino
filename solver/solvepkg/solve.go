@@ -34,7 +34,7 @@ func Search(pieces []Piece, board [][]string, solutions [][]string) {
 	width, height := len(board[0]), len(board)
 	var remainingPieces []Piece
 	var clonedBoard [][]string
-	copy(remainingPieces, pieces)
+	remainingPieces = append(remainingPieces, pieces...)
 	copy(clonedBoard, board)
 
 	idx := 0
