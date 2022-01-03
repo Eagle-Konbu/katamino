@@ -34,7 +34,7 @@ func Fill(piece Piece, pointIdx int, board [][]string) bool {
 	return true
 }
 
-func Search(pieces []Piece, board [][]string, solutions [][]string) {
+func Search(pieces []Piece, board [][]string, solutions [][]string) [][]string {
 	width, height := len(board[0]), len(board)
 	var remainingPieces []Piece
 	clonedBoard := make([][]string, height)
@@ -54,30 +54,34 @@ func Search(pieces []Piece, board [][]string, solutions [][]string) {
 		}
 	}
 
-	for i, pTmp := range remainingPieces {
-		allAnglePieces := []Piece{pTmp}
-		for _, piece := range allAnglePieces {
-			if Fill(piece, idx, clonedBoard) {
-				if len(remainingPieces) == 1 {
-					fmt.Println(clonedBoard)
-					solution := make([]string, 60)
-					for i := 0; i < height; i++ {
-						for j := 0; j < width; j++ {
-							solution[i*width+j] = clonedBoard[i][j]
-						}
+	for i, piece := range remainingPieces {
+		if Fill(piece, idx, clonedBoard) {
+			if len(remainingPieces) == 1 {
+				solution := make([]string, 60)
+				for i := 0; i < height; i++ {
+					for j := 0; j < width; j++ {
+						solution[i*width+j] = clonedBoard[i][j]
 					}
-					solutions = append(solutions, solution)
-				} else {
-					Search(append(remainingPieces[:i], remainingPieces[i+1:]...), clonedBoard, solutions)
 				}
+				solutions = append(solutions, solution)
+			} else {
+				Search(append(remainingPieces[:i], remainingPieces[i+1:]...), clonedBoard, solutions)
 			}
 		}
 	}
+	solution := make([]string, 60)
+	for i := 0; i < height; i++ {
+		for j := 0; j < width; j++ {
+			solution[i*width+j] = clonedBoard[i][j]
+		}
+	}
+	solutions = append(solutions, solution)
+	fmt.Println(solutions)
+	return solutions
 }
 
 func Solve(width int, height int) ([][]string, float64) {
-	// var solTmp []string
-	var solutions [][]string
+	solutions := make([][]string, 0)
 
 	puzzle := make([][]string, height)
 	for i := range puzzle {
@@ -139,7 +143,15 @@ func Solve(width int, height int) ([][]string, float64) {
 
 	startTime := time.Now()
 
-	Search(pieces, puzzle, solutions)
+	solutions = Search(pieces, puzzle, solutions)
+
+	for i := range solutions {
+		for j := range solutions[i] {
+			if solutions[i][j] == "" {
+				solutions[i][j] = "#000000"
+			}
+		}
+	}
 
 	// for i := 0; i < 30; i++ {
 	// 	solTmp = append(solTmp, "#AA0000")
