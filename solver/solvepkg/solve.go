@@ -22,11 +22,14 @@ func Fill(piece Piece, pointIdx int, board [][]string) bool {
 		if newTarget.x >= width || newTarget.y >= height {
 			return false
 		}
+		if board[newTarget.y][newTarget.x] != "" {
+			return false
+		}
 		targets[i] = newTarget
 	}
 
 	for _, p := range targets {
-		board[p.x][p.y] = piece.color
+		board[p.y][p.x] = piece.color
 	}
 	return true
 }
@@ -99,6 +102,40 @@ func Solve(width int, height int) ([][]string, float64) {
 		Piece{color: "#ffc0cb", positions: []Point{Point{x: 0, y: 0}, Point{x: 0, y: -1}, Point{x: 0, y: -2}, Point{x: 1, y: 0}, Point{x: 1, y: -1}}},
 		Piece{color: "#004900", positions: []Point{Point{x: 0, y: 0}, Point{x: 1, y: 0}, Point{x: 2, y: 0}, Point{x: 1, y: -1}, Point{x: 1, y: -2}}},
 	}
+
+	rotatedPieces := []Piece{
+		Rotate90(pieces[0], Point{x: 0, y: 1}),
+		Rotate180(pieces[0], Point{x: 2, y: 1}),
+		Rotate270(pieces[0], Point{x: 2, y: 0}),
+		Rotate90(pieces[1], Point{x: 0, y: 2}),
+		Rotate180(pieces[1], Point{x: 1, y: 0}),
+		Rotate270(pieces[1], Point{x: 1, y: -1}),
+		Rotate90(pieces[2], Point{x: 0, y: 1}),
+		Rotate180(pieces[2], Point{x: 2, y: -1}),
+		Rotate270(pieces[2], Point{x: 2, y: -1}),
+		Rotate90(pieces[4], Point{x: 1, y: 1}),
+		Rotate180(pieces[4], Point{x: 1, y: 1}),
+		Rotate270(pieces[4], Point{x: 1, y: -2}),
+		Rotate90(pieces[5], Point{x: 0, y: 0}),
+		Rotate90(pieces[6], Point{x: 0, y: 0}),
+		Rotate180(pieces[6], Point{x: 2, y: -1}),
+		Rotate270(pieces[6], Point{x: 1, y: -2}),
+		Rotate90(pieces[7], Point{x: 0, y: 4}),
+		Rotate90(pieces[8], Point{x: 0, y: 3}),
+		Rotate180(pieces[8], Point{x: 1, y: 0}),
+		Rotate270(pieces[8], Point{x: 1, y: 0}),
+		Rotate90(pieces[9], Point{x: 0, y: 2}),
+		Rotate180(pieces[9], Point{x: 2, y: 0}),
+		Rotate270(pieces[9], Point{x: 2, y: 0}),
+		Rotate90(pieces[10], Point{x: 0, y: 2}),
+		Rotate180(pieces[10], Point{x: 1, y: 2}),
+		Rotate270(pieces[10], Point{x: 0, y: 0}),
+		Rotate90(pieces[11], Point{x: 0, y: 0}),
+		Rotate180(pieces[11], Point{x: 2, y: 0}),
+		Rotate270(pieces[11], Point{x: 1, y: -2}),
+	}
+
+	pieces = append(pieces, rotatedPieces...)
 
 	startTime := time.Now()
 
