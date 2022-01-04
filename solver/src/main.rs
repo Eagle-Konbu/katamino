@@ -4,7 +4,7 @@ use serde::{Deserialize, Serialize};
 
 mod solve;
 
-#[derive(Deserialize)]
+#[derive(Deserialize, Debug)]
 struct Size {
     width: usize,
     height: usize,
@@ -20,6 +20,7 @@ struct Solution {
 
 #[get("/solve/{height}/{width}")]
 async fn index(size: web::Path<Size>) -> HttpResponse {
+    println!("{:?}", size);
     let sol = solve::solve(size.height, size.width);
     let res = Solution {
         width: size.width,
