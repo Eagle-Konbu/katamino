@@ -128,8 +128,8 @@ pub fn solve(width: usize, height: usize) -> (Vec<Vec<String>>, f64) {
 
     search(&mut board, pieces.clone(), &mut solutions);
 
-    for i in 0..height {
-        for j in 0..width {
+    for i in 0..solutions.len() {
+        for j in 0..solutions[i].len() {
             if solutions[i][j].eq("") {
                 solutions[i][j] = String::from("#000000");
             }
@@ -144,16 +144,17 @@ fn search(board: &mut Vec<Vec<String>>, pieces: Vec<Piece>, solutions: &mut Vec<
     let (width, height) = (board[0].len(), board.len());
     let mut idx = 0;
     for i in 0..60 {
-        let (x, y) = (i % width, height / width);
+        let (x, y) = (i % width, i / width);
         if board[y][x].eq("") {
             idx = i;
             break;
         }
     }
+    println!("{} {}", pieces.len(), idx);
     for i in 0..pieces.len() {
         for p in pieces[i].all_angle() {
             if fill(board, idx, p.clone(), false) {
-                if completes(board) {
+                if pieces.len() == 1 {
                     println!("fonund");
                     let mut new_solution = vec![String::from(""); 60];
                     for i in 0..height {
@@ -162,13 +163,14 @@ fn search(board: &mut Vec<Vec<String>>, pieces: Vec<Piece>, solutions: &mut Vec<
                         }
                     }
                     solutions.push(new_solution);
+                } else {
+                    // println!("{:?}", board);
+                    let mut remaining_pieces = pieces.clone();
+                    remaining_pieces.remove(i);
+                    search(board, remaining_pieces, solutions);
                 }
-            } else {
-                let mut remaining_pieces = pieces.clone();
-                remaining_pieces.remove(i);
-                search(board, remaining_pieces, solutions);
+                fill(board, idx, p.clone(), true);
             }
-            fill(board, idx, p.clone(), true);
         }
     }
 }

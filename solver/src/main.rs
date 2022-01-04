@@ -21,7 +21,7 @@ struct Solution {
 #[get("/solve/{height}/{width}")]
 async fn index(size: web::Path<Size>) -> HttpResponse {
     println!("{:?}", size);
-    let sol = solve::solve(size.height, size.width);
+    let sol = solve::solve(size.width, size.height);
     let res = Solution {
         width: size.width,
         height: size.height,
