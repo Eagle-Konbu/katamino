@@ -1,5 +1,5 @@
 pub fn solve(width: usize, height: usize) -> (Vec<Vec<String>>, f64) {
-    let mut sol_tmp = vec![String::from("#AA0000"); 30];
+    let timer = Timer::new();
     let mut board = vec![vec![String::from(""); width]; height];
     let pieces = vec![
         Piece {
@@ -124,11 +124,6 @@ pub fn solve(width: usize, height: usize) -> (Vec<Vec<String>>, f64) {
         },
     ];
 
-    // for _ in 0..30 {
-    //     sol_tmp.push(String::from("#00AA00"));
-    // }
-
-    // let sol = vec![sol_tmp.clone(); 4];
     let mut solutions = Vec::new();
 
     search(&mut board, pieces.clone(), &mut solutions);
@@ -141,10 +136,11 @@ pub fn solve(width: usize, height: usize) -> (Vec<Vec<String>>, f64) {
         }
     }
 
-    return (solutions, 2.0);
+    return (solutions, timer.get_time());
 }
 
 fn search(board: &mut Vec<Vec<String>>, pieces: Vec<Piece>, solutions: &mut Vec<Vec<String>>) {
+    // println!("{}", pieces.len());
     let (width, height) = (board[0].len(), board.len());
     let mut idx = 0;
     for i in 0..60 {
