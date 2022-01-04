@@ -8,8 +8,6 @@ pub fn solve(width: usize, height: usize) -> (Vec<Vec<String>>, f64) {
 
     let sol = vec![sol_tmp.clone(); 4];
 
-    let timer = Timer::new();
-
     return (sol, 2.0);
 }
 
