@@ -1,5 +1,6 @@
-pub fn solve() -> (Vec<Vec<String>>, f64) {
+pub fn solve(width: usize, height: usize) -> (Vec<Vec<String>>, f64) {
     let mut sol_tmp = vec![String::from("#AA0000"); 30];
+    let mut board = vec![vec![""; width]; height];
 
     for _ in 0..30 {
         sol_tmp.push(String::from("#00AA00"));
@@ -10,6 +11,15 @@ pub fn solve() -> (Vec<Vec<String>>, f64) {
     let timer = Timer::new();
 
     return (sol, 2.0);
+}
+
+struct Point {
+    x: usize,
+    y: usize,
+}
+struct Piece {
+    color: String,
+    positions: Vec<Point>,
 }
 
 fn get_time() -> f64 {
