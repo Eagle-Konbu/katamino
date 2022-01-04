@@ -1,7 +1,7 @@
 pub fn solve(width: usize, height: usize) -> (Vec<Vec<String>>, f64) {
     let timer = Timer::new();
     let mut board = vec![vec![String::from(""); width]; height];
-    let pieces = vec![
+    let mut pieces = vec![
         Piece {
             color: String::from("#fdf100"),
             positions: vec![
@@ -11,6 +11,7 @@ pub fn solve(width: usize, height: usize) -> (Vec<Vec<String>>, f64) {
                 Point { x: 2, y: 0 },
                 Point { x: 2, y: 1 },
             ],
+            used: false,
         },
         Piece {
             color: String::from("#29005d"),
@@ -21,6 +22,7 @@ pub fn solve(width: usize, height: usize) -> (Vec<Vec<String>>, f64) {
                 Point { x: 1, y: 0 },
                 Point { x: 1, y: -1 },
             ],
+            used: false,
         },
         Piece {
             color: String::from("#66e25a"),
@@ -31,6 +33,7 @@ pub fn solve(width: usize, height: usize) -> (Vec<Vec<String>>, f64) {
                 Point { x: 1, y: -1 },
                 Point { x: 2, y: -1 },
             ],
+            used: false,
         },
         Piece {
             color: String::from("#BB0000"),
@@ -41,6 +44,7 @@ pub fn solve(width: usize, height: usize) -> (Vec<Vec<String>>, f64) {
                 Point { x: 1, y: 1 },
                 Point { x: 1, y: -1 },
             ],
+            used: false,
         },
         Piece {
             color: String::from("#996e5b"),
@@ -51,6 +55,7 @@ pub fn solve(width: usize, height: usize) -> (Vec<Vec<String>>, f64) {
                 Point { x: 1, y: -1 },
                 Point { x: 1, y: -2 },
             ],
+            used: false,
         },
         Piece {
             color: String::from("#234c83"),
@@ -61,6 +66,7 @@ pub fn solve(width: usize, height: usize) -> (Vec<Vec<String>>, f64) {
                 Point { x: 1, y: -2 },
                 Point { x: 2, y: -2 },
             ],
+            used: false,
         },
         Piece {
             color: String::from("#808080"),
@@ -71,6 +77,7 @@ pub fn solve(width: usize, height: usize) -> (Vec<Vec<String>>, f64) {
                 Point { x: 1, y: -2 },
                 Point { x: 2, y: -1 },
             ],
+            used: false,
         },
         Piece {
             color: String::from("#000080"),
@@ -81,6 +88,7 @@ pub fn solve(width: usize, height: usize) -> (Vec<Vec<String>>, f64) {
                 Point { x: 0, y: 3 },
                 Point { x: 0, y: 4 },
             ],
+            used: false,
         },
         Piece {
             color: String::from("#dad400"),
@@ -91,6 +99,7 @@ pub fn solve(width: usize, height: usize) -> (Vec<Vec<String>>, f64) {
                 Point { x: 0, y: 3 },
                 Point { x: 1, y: 0 },
             ],
+            used: false,
         },
         Piece {
             color: String::from("#62b7ff"),
@@ -101,6 +110,7 @@ pub fn solve(width: usize, height: usize) -> (Vec<Vec<String>>, f64) {
                 Point { x: 1, y: 0 },
                 Point { x: 2, y: 0 },
             ],
+            used: false,
         },
         Piece {
             color: String::from("#ffc0cb"),
@@ -111,6 +121,7 @@ pub fn solve(width: usize, height: usize) -> (Vec<Vec<String>>, f64) {
                 Point { x: 1, y: 1 },
                 Point { x: 1, y: 2 },
             ],
+            used: false,
         },
         Piece {
             color: String::from("#004900"),
@@ -121,12 +132,13 @@ pub fn solve(width: usize, height: usize) -> (Vec<Vec<String>>, f64) {
                 Point { x: 1, y: -1 },
                 Point { x: 1, y: -2 },
             ],
+            used: false,
         },
     ];
 
     let mut solutions = Vec::new();
 
-    search(&mut board, pieces.clone(), &mut solutions);
+    search(&mut board, &mut pieces, &mut solutions);
 
     for i in 0..solutions.len() {
         for j in 0..solutions[i].len() {
@@ -139,7 +151,7 @@ pub fn solve(width: usize, height: usize) -> (Vec<Vec<String>>, f64) {
     return (solutions, timer.get_time());
 }
 
-fn search(board: &mut Vec<Vec<String>>, pieces: Vec<Piece>, solutions: &mut Vec<Vec<String>>) {
+fn search(board: &mut Vec<Vec<String>>, pieces: &mut Vec<Piece>, solutions: &mut Vec<Vec<String>>) {
     // println!("{}", pieces.len());
     let (width, height) = (board[0].len(), board.len());
     let mut idx = 0;
@@ -150,11 +162,23 @@ fn search(board: &mut Vec<Vec<String>>, pieces: Vec<Piece>, solutions: &mut Vec<
             break;
         }
     }
-    println!("{} {}", pieces.len(), idx);
+    let mut remaining_count = 0;
     for i in 0..pieces.len() {
+        if pieces[i].used == false {
+            remaining_count += 1;
+        }
+    }
+    // println!("{} {}", remaining_count, idx);
+    for i in 0..pieces.len() {
+        if pieces[i].used {
+            continue;
+        }
+        if solutions.len() > 0 {
+            break;
+        }
         for p in pieces[i].all_angle() {
             if fill(board, idx, p.clone(), false) {
-                if pieces.len() == 1 {
+                if remaining_count < 3 {
                     println!("fonund");
                     let mut new_solution = vec![String::from(""); 60];
                     for i in 0..height {
@@ -164,12 +188,11 @@ fn search(board: &mut Vec<Vec<String>>, pieces: Vec<Piece>, solutions: &mut Vec<
                     }
                     solutions.push(new_solution);
                 } else {
-                    // println!("{:?}", board);
-                    let mut remaining_pieces = pieces.clone();
-                    remaining_pieces.remove(i);
-                    search(board, remaining_pieces, solutions);
+                    pieces[i].used = true;
+                    search(board, pieces, solutions);
                 }
                 fill(board, idx, p.clone(), true);
+                pieces[i].used = false;
             }
         }
     }
@@ -226,6 +249,7 @@ struct Point {
 struct Piece {
     color: String,
     positions: Vec<Point>,
+    used: bool,
 }
 
 impl Piece {
@@ -250,6 +274,7 @@ impl Piece {
         let rotated_pieces = Piece {
             color: self.color.clone(),
             positions: new_positions,
+            used: false,
         };
 
         return rotated_pieces;
@@ -286,6 +311,7 @@ impl Piece {
         let fliped_pieces = Piece {
             color: self.color.clone(),
             positions: new_positions,
+            used: false,
         };
 
         return fliped_pieces;
