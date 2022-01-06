@@ -152,11 +152,10 @@ pub fn solve(width: usize, height: usize) -> (Vec<Vec<String>>, f64) {
 }
 
 fn search(board: &mut Vec<Vec<String>>, pieces: &mut Vec<Piece>, solutions: &mut Vec<Vec<String>>) {
-    // println!("{}", pieces.len());
     let (width, height) = (board[0].len(), board.len());
     let mut idx = 0;
     for i in 0..60 {
-        let (x, y) = (i % width, i / width);
+        let (x, y) = (i / height, i % height);
         if board[y][x].eq("") {
             idx = i;
             break;
@@ -168,7 +167,6 @@ fn search(board: &mut Vec<Vec<String>>, pieces: &mut Vec<Piece>, solutions: &mut
             remaining_count += 1;
         }
     }
-    // println!("{} {}", remaining_count, idx);
     for i in 0..pieces.len() {
         if pieces[i].used {
             continue;
@@ -178,8 +176,7 @@ fn search(board: &mut Vec<Vec<String>>, pieces: &mut Vec<Piece>, solutions: &mut
         }
         for p in pieces[i].all_angle() {
             if fill(board, idx, p.clone(), false) {
-                if remaining_count < 3 {
-                    println!("fonund");
+                if remaining_count == 1 {
                     let mut new_solution = vec![String::from(""); 60];
                     for i in 0..height {
                         for j in 0..width {
@@ -203,8 +200,8 @@ fn fill(board: &mut Vec<Vec<String>>, idx: usize, piece: Piece, reset: bool) -> 
     let mut target_points = vec![];
     for &p in piece.positions.iter() {
         let new_target = Point {
-            x: idx as i32 % width + p.x,
-            y: idx as i32 / width + p.y,
+            x: idx as i32 / height + p.x,
+            y: idx as i32 % height + p.y,
         };
         if new_target.x >= width || new_target.y >= height || new_target.x < 0 || new_target.y < 0 {
             return false;
@@ -220,19 +217,6 @@ fn fill(board: &mut Vec<Vec<String>>, idx: usize, piece: Piece, reset: bool) -> 
             board[p.y as usize][p.x as usize] = String::from("");
         } else {
             board[p.y as usize][p.x as usize] = piece.color.clone();
-        }
-    }
-
-    return true;
-}
-
-fn completes(board: &Vec<Vec<String>>) -> bool {
-    let (width, height) = (board[0].len(), board.len());
-    for i in 0..height {
-        for j in 0..width {
-            if board[i][j].eq("") {
-                return false;
-            }
         }
     }
 
@@ -274,7 +258,7 @@ impl Piece {
         let rotated_pieces = Piece {
             color: self.color.clone(),
             positions: new_positions,
-            used: false,
+            used: self.used,
         };
 
         return rotated_pieces;
@@ -290,7 +274,7 @@ impl Piece {
         return rotate180_piece.rotate90();
     }
 
-    fn flip(&self) -> Piece {
+    fn flip_x(&self) -> Piece {
         let mut base_position = self.positions[0];
         for &p in self.positions.iter() {
             if p.x > base_position.x {
@@ -311,14 +295,41 @@ impl Piece {
         let fliped_pieces = Piece {
             color: self.color.clone(),
             positions: new_positions,
-            used: false,
+            used: self.used,
+        };
+
+        return fliped_pieces;
+    }
+
+    fn flip_y(&self) -> Piece {
+        let mut base_position = self.positions[0];
+        for &p in self.positions.iter() {
+            if p.y > base_position.y {
+                base_position = p;
+            } else if p.y == base_position.y && p.x < base_position.x {
+                base_position = p;
+            }
+        }
+
+        let mut new_positions = vec![];
+        for &p in self.positions.iter() {
+            let new_position = Point {
+                x: p.x - base_position.x,
+                y: base_position.y - p.y,
+            };
+            new_positions.push(new_position);
+        }
+        let fliped_pieces = Piece {
+            color: self.color.clone(),
+            positions: new_positions,
+            used: self.used,
         };
 
         return fliped_pieces;
     }
 
     fn all_angle(&self) -> Vec<Piece> {
-        let mut vector = vec![
+        let mut pieces = vec![
             self.clone(),
             self.rotate90(),
             self.rotate180(),
@@ -326,10 +337,11 @@ impl Piece {
         ];
 
         for i in 0..4 {
-            vector.push(vector[i].flip())
+            pieces.push(pieces[i].flip_x());
+            pieces.push(pieces[i].flip_y());
         }
 
-        return vector;
+        return pieces;
     }
 }
 
