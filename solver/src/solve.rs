@@ -177,6 +177,7 @@ fn search(board: &mut Vec<Vec<String>>, pieces: &mut Vec<Piece>, solutions: &mut
         for p in pieces[i].all_angle() {
             if fill(board, idx, p.clone(), false) {
                 if remaining_count == 1 {
+                    println!("found");
                     let mut new_solution = vec![String::from(""); 60];
                     for i in 0..height {
                         for j in 0..width {
@@ -184,6 +185,7 @@ fn search(board: &mut Vec<Vec<String>>, pieces: &mut Vec<Piece>, solutions: &mut
                         }
                     }
                     solutions.push(new_solution);
+                    break;
                 } else {
                     pieces[i].used = true;
                     search(board, pieces, solutions);
